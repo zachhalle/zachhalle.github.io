@@ -28,6 +28,12 @@ html,
 body {
   height: 100%;
   background-color: #333;
+  color: rgb(255, 255, 255);
+  position: relative;
+  min-height: 350px;
+  background: url('images/manhattan.jpg');
+  background-repeat:no-repeatdisplay: compact;
+  background-size: 1728px 1080px;
 }
 body {
   color: #fff;
@@ -111,12 +117,6 @@ body {
 
 .cover {
   padding: 0 20px;
-  color: rgb(255, 255, 255);
-  position: relative;
-  min-height: 350px;
-  background: url('images/manhattan.jpg');
-  background-repeat:no-repeatdisplay: compact;
-  background-size: 1728px 1080px;
 }
 
 .cover .btn-lg {
