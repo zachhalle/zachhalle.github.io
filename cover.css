@@ -28,12 +28,11 @@ html,
 body {
   height: 100%;
   background-color: #333;
-  color: rgb(255, 255, 255);
-  position: relative;
   min-height: 350px;
   background: url('images/reine.jpg');
-  background-repeat:no-repeatdisplay: compact;
-  background-size: 3000px 1687px;
+  background-repeat:no-repeat;
+  background-size: cover;
+  background-position: center center;
 }
 body {
   color: #fff;
