@@ -91,40 +91,50 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p>If you're reading this blog, you've likely read an argument at some point that \(.999... = 1\).</p>
+                    <p>If you're reading this blog, you've likely read an argument at some point that \(.999... = 1\). However, if this is completely new information to you: no, this is not a joke. These two decimal forms represent the same quantity. Their difference is exactly equal to zero. One common way this is 'proven' is via the following argument:</p>
 
-                    <p>Science cuts two ways, of course; its products can be used for both good and evil. But there's no turning back from science. The early warnings about technological dangers also come from science.</p>
+                    $$\frac{1}{3} = .333... \implies 3 \cdot \left(\frac{1}{3}\right) = 3 \cdot \left(.333...\right) \implies 1 = .999...$$
 
-                    <p>What was most significant about the lunar voyage was not that man set foot on the Moon but that they set eye on the earth.</p>
+                    <p>While the manipulations here are valid, if this argument feels like 'cheating' to you (it does to me), you may be more conviced by this alternate proof:</p>
 
-                    <p>A Chinese tale tells of some men sent to harm a young girl who, upon seeing her beauty, become her protectors rather than her violators. That's how I felt seeing the Earth for the first time. I could not help but love and cherish her.</p>
+                    $$x = .999\dots \\
+                      \implies \\
+                      10x = 9.999\dots \\
+                      \implies \\
+                      10x - x = 9.999... - x \\
+                      \implies \\
+                      9x = 9.999... - .999\dots \\
+                      \implies \\
+                      9x = 9 \\
+                      \implies \\
+                      x = 1
+                    $$
 
-                    <p>For those who have seen the Earth from space, and for the hundreds and perhaps thousands more who will, the experience most certainly changes your perspective. The things that we share in our world are far more valuable than those which divide us.</p>
+                    <p>Perhaps now you are more convinced. Unfortunately, most discussions of the subject would end here, with the reader perhaps now believing in the seemingly paradoxical identity, or perhaps not. But the fact is that a mathematician would not be satisfied by the arguments presented thus far. The reason for this is that there is simply far too much ambiguity in the expression "\(.999...\)". In order to make sure all the mathematics presented above is actually is well founded, we need to explain what an infinitely repeating decimal is.</p>
 
-                    <h2 class="section-heading">The Final Frontier</h2>
+                    <p>Perhaps nailing down the meaning of \(.999...\) seems unnecessary; you learned about this in middle school! But to demonstrate the necessity of this formality, I offer a variety of seemingly plausible descriptions of what the expression represents (paraphrased from Wikipedia):
+                    <ul>
+                      <li>\(.999...\) represents an unimaginably large but finite string of 9s
+                      <li>\(.999...\) represents a string of 9s with a unspecified, variable length
+                      <li>\(.999...\) represents an infinite string of 9s with a 9 "at infinity"
+                      <li>\(.999...\) represents a sequence of decimals values: \(.9, .99, .999, ...\)
+                    </ul>
+                    </p>
 
-                    <p>There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.</p>
+                    <p>None of these descriptions actually reflect how the quantity is defined! In fact to understand the definition of \(.999...\) requires some math that is not usually discussed until a real analysis course, but I will introduce it here.</p>
 
-                    <p>There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.</p>
+                    <h2 class="section-heading">Sequences</h2>
 
-                    <blockquote>The dreams of yesterday are the hopes of today and the reality of tomorrow. Science has not yet mastered prophecy. We predict too much for the next year and yet far too little for the next ten.</blockquote>
+                    <p>Formally, a (real) sequence is a mapping, \(f : \mathbb{N} \rightarrow \mathbb{R}\). What this means intuitively is that a sequence is a "list" of real numbers indexed by naturals - there is a first, second, third element, and so on. Often, a sequence will be denoted \(\{a_n\}\) where \(a_n\) is the \(n\)th term of the sequence. Thus, for example, \(\{\frac{1}{2^n}\} = (1, \frac{1}{2}, \frac{1}{4}, \frac{1}{8}, ...)\).</p>
 
-                    <p>Spaceflights cannot be stopped. This is not the work of any one man or even a group of men. It is a historical process which mankind is carrying out in accordance with the natural laws of human development.</p>
+                    <p>Some sequences "converge to a limit". Formally, \(\{a_n\}\) converges to \(L\) if \(\forall \epsilon > 0. \; \exists n_0 \in \mathbb N. \; \forall n > n_0. \; a_n \in (L - \epsilon, L + \epsilon)\). What this means intuitively is that \(\{a_n\}\) converges to \(L\) if as \(n\) tends towards infinity, the difference between \(a_n\) and \(L\) gets (arbitrarily) close to 0. In particular, you could demand "I want the difference between \(a_n\) and \(L\) to be greater than \(\epsilon\)", and no matter your choice of \(\epsilon\), I would be able to find you an index \(n\) beyond which the sequence is always at least that close to \(L\). For example: \(\{\frac{1}{2^n}\}\) converges to 0 because it gets arbitrarily close to 0. For shorthand we write \(\lim\limits_{n\rightarrow\infty} \frac{1}{2^n} = 0\).</p>
 
-                    <h2 class="section-heading">Reaching for the Stars</h2>
+                    <h2 class="section-heading">Defining \(.999...\)</h2>
 
-                    <p>As we got further and further away, it [the Earth] diminished in size. Finally it shrank to the size of a marble, the most beautiful you can imagine. That beautiful, warm, living object looked so fragile, so delicate, that if you touched it with a finger it would crumble and fall apart. Seeing this has to change a man.</p>
+                    <p>We now have the machinery needed to define \(.999...\). Specifically, it is defined as the <b>limit</b> of the sequence (\(.9, .99, .999, ...\)). That is, \(.999...\) is shorthand for the expression \(\lim\limits_{n \rightarrow \infty} \underbrace{.999...9}_\textrm{\(n\) times}\).</p>
 
-                    <a href="#">
-                        <img class="img-responsive" src="img/post-sample-image.jpg" alt="">
-                    </a>
-                    <span class="caption text-muted">To go places and do things that have never been done before – that’s what living is all about.</span>
+                    <p>Then, at last, as the sequence (\(.9, .99, .999, ...\)) grows arbitrarily close to 1, we have \(.999... = \lim\limits_{n \rightarrow \infty} \underbrace{.999...9}_\textrm{\(n\) times} = 1\).</p>
 
-                    <p>Space, the final frontier. These are the voyages of the Starship Enterprise. Its five-year mission: to explore strange new worlds, to seek out new life and new civilizations, to boldly go where no man has gone before.</p>
-
-                    <p>As I stand out here in the wonders of the unknown at Hadley, I sort of realize there’s a fundamental truth to our nature, Man must explore, and this is exploration at its greatest.</p>
-
-                    <p>Placeholder text by <a href="http://spaceipsum.com/">Space Ipsum</a>. Photographs by <a href="https://www.flickr.com/photos/nasacommons/">NASA on The Commons</a>.</p>
                 </div>
             </div>
         </div>
