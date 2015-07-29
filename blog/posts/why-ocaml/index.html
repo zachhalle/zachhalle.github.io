@@ -1,0 +1,254 @@
+<DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Why functional?</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../../css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet" href="../scripts/highlight/styles/darkula.css">
+    <script src="../scripts/highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- MathJax -->
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="../../../index.html">Home</a>
+                    </li>
+                    <li>
+                        <a href="../../index.html">Posts</a>
+                    </li>
+                    <li>
+                        <a href="../../about.html">About</a>
+                    </li>
+                    <li>
+                        <a href="mailto:zach.halle95@gmail.com">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('../../img/post-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Why functional?</h1>
+                        <span class="meta">July 27, 2015</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p>On one occassion at my previous summer I mentioned my preference for functional languages in a conversation with several coworkers. A couple balked at this idea, intoning that OOP and imperative styles were superior and much more intuitive. I'm not one to get started up over such things so I just let it go, but this experience and the feeling that this attitude is common in industry motivated me to lay out a few reasons why I believe that the opposite is true; that functional style is equally or more intuitive, and that it is superior for producing bugless, concise, and modular code. I will be using Java to illustrate imperative code and OCaml to illustrate functional code.</p>
+
+                    <h2 class="section-heading">Less hidden semantics; more unified language concepts</h2>
+                    
+                    <p>Many patterns in imperative languages rely on special built-in constructs which are treated differently from normal expressions in the language. Consider the following Java:</p>
+
+                    <pre><code class = "java">
+                    int[] arr = // int array
+                    int i;
+                    for (i = 0; i < arr.length; i++) {
+                      // loop body
+                    }
+                    </code></pre>
+
+                    <p>To programmers this construct should be intuitive, due to their experience with it. Nonetheless, there is a lot going on here that isn't clear from the way it is written. Which class of statements and expressions can replace the assignment of <code>i</code>? Is any legal Java expression allowed there? How about any general syntactic form? It's not clear whether any statement is needed there at all, or whether we can leave the space before the first semicolon blank. What order are the above statements executed? Surprisingly - though it becomes intuitive once you are used to it - the loop body is executed before the update but after the initial assignment and loop guard check.</p>
+
+                    <p> I'm not claiming that using a <code>for</code> loop is an insurmountable challenge. I'm claiming that the cognitive load of using all of these special syntactic forms, which are necessary in a language like Java, adds up. It leads to subtle, accidental bugs, because your attention is divided. All in all, there is a lot of trivia and details being memorized just to reason about ubiquitous constructs. In a functional language, function application is used as the primary control structure, and it has very simple and intuitive semantics. Further, it is general enough to emulate all sorts of imperative constructs, as seen below.</p>
+
+                    <h2 class="section-heading">Functions parameterized by functions</h2>
+
+                    <p>Some examples follow. Consider the common operation of building a collection with elements of type <code>T</code> from a collection of elements of type <code>S</code>. Suppose there is a function <code>f</code> which accepts an <code>S</code> and returns a <code>T</code>:</p>
+
+                    <pre><code class = "java">
+                    // arrS in scope
+                    ArrayList<T> arrT = new ArrayList<T>();
+
+                    for (int i = 0; i < arrT.length(); i++) {
+                        arrT.add(f(arrS.get(i)))
+                    }
+                    </code></pre>
+
+                    <p>In a functional language such as OCaml, this would be written as follows:</p>
+
+                    <pre><code class = "ocaml">
+                    (* arrS in scope *)
+                    let arrT = List.map f arrS
+                    </code></pre>
+
+                    <p>No special syntax is needed; this functionality is implemented using only function application, as <code>List.map</code> can be defined as a recursive function. Best of all, <code>f</code> is one of the parameters to this function. In Java, the above structure needs to be copied over each time it occurs, because we cannot paramaterize code by the function <code>f</code>. But this defeats the purpose of having functions: we use them because we want to avoid rewriting common operations. Since OCaml allows functions to be parameterized by functions, we can abstract this operation into a new function, which we call <code>map</code>. Our code comes out more concise and more modular. It is less prone to bugs because you don't have to tangle with subtle <code>for</code> loop semantics. In fact, the above Java does have a bug: the loop guard needs to use arrS because arrT will not have the correct length until after the loop is executed. Did you notice? Something like a <code>NullPointerException</code> or <code>IndexOutOfRange</code> exception will occur.</p>
+
+                    <p>Another common operation: compute a single value of some type <code>T</code> by iterating through a collection with elements of type <code>S</code> and using a function which takes a <code>T</code> and an <code>S</code> and returns a <code>T</code>. That was a mouthful, so it's probably easiest to understand through code:</p>
+
+                    <pre><code class = "java">
+                    // value init of type S in scope
+                    // collection arrT of type ArrayList<T> in scope
+                    S result = init;
+
+                    for (int i = 0; i < arrT.length(); i++) {
+                      result = f(arrT.get(i), result);
+                    }
+                    </code></pre>
+
+                    <p>To make things more concrete, you could suppose <code>S</code> and <code>T</code> were both <code>int</code>, <code>f</code> was a function that added both of its arguments, and <code>init</code> was <code>0</code>.</p>
+
+                    <pre><code class = "java">
+                    int sum = 0;
+
+                    for (int i = 0; i < arrT.length(); i++) {
+                      sum = arrT.get(i) + sum;
+                    }
+                    </code></pre>
+
+                    <p>The result is code that sums the elements of a list. In OCaml this functionality is abstracted into the function <code>foldr</code>:</p>
+
+                    <pre><code class = "ocaml">
+                    let result = List.foldr f init arrT
+                    </code></pre>
+
+                    <p>And the sum use case would be</p>
+
+                    <pre><code class = "ocaml">
+                    let sum = List.foldr (+) 0 arrT
+                    </code></pre>
+
+                    <p>Again, the result is cleaner and there is less room for errors. Does the above Java have any errors? Not visibly, but there's no guarantee that the function <code>f</code> does not mutate the variable <code>result</code> before returning, possibly erasing the contents or making them otherwise unrecoverable. Perhaps surprisingly, even though the OCaml code performs the same operation, it is immune to this error, due to pervasive immutability.</p>
+
+                    <h2 class="section-heading">Pervasive immutability</h2>
+
+                    <p>In OCaml, variables are bound to values that cannot be reassigned unless declared the variable is declared with a special keyword. This is perhaps the most radical departure from imperative style that functional languages adopt.</p>
+
+                    <p>This means, for example that if you pass in an argument of type <code>int list</code> to <code>List.map</code>, as above, you can be <b>certain</b> that the contents of the list will be unchanged. In places where imperative languages would destructively update the contents of a variable, functional languages prefer to build new values from old ones. In Java you might add an element to a collection as in <code>stack.push(value)</code>; in OCaml, you could write <code>let stack' = value :: stack</code>. Then, the value of <code>stack</code> would be unchanged, and <code>stack'</code> contains the updated value.</p>
+
+                    <p>So why is this a good thing? Imagine you had to perform some maintenance on a large Java code base, upwards of 10,000 lines. It will be a very difficult task to understand how this code works because implicit state is everywhere. Mutable global variables influence the behavior of the entire program. Method calls throughout the code base may or may not invisibly update the contents of their arguments. Each time you see a function call you may get sidetracked diving into that piece of code to make sure you understand all the hidden side effects that might occur from executing that code. Bugs that only occur when the program enters a very particular state are likely and extremely hard to detect, recreate, and debug.</p>
+
+                    <p>If the code base were written in an immutable-by-default language, all logic is local. The behavior of a particular function call should depend only on the arguments to that function, not on hidden global state. Thus if an error should occur inside a function, it should be sufficient to rerun that section with the same arguments in order to reproduce the issue. Further, as functions won't perform destructive side effects, understanding the behavior of function calls comes down to looking at the inputs and outputs. If the relationship is correct, your code is correct. Bugs are both less likely to occur and easier to identify and eliminate.</p>
+
+                    <p>One might argue that Java can achieve the same effect by using the <code>final</code> keyword, but the point is that OCaml and other functional languages prefer safety by default. Writing code with the same level of safety would require ubiquitous use of <code>final</code>, but in practice it is not very used. Conversely, when you want this unsafety - as you sometimes need code with side-effects such as I/O - to exist in your OCaml code, you explicity state you are doing so.</p>
+
+                    <h2 class="section-heading">Is it a culture problem?</h2>
+
+                    <p>I've only presented small examples. It is completely understandable if that convinces no one of the viability of FP for large projects where OOP is already proven. However, I hope this has been enough to convince others that it is worth their interest. That way we might see FP prove itself on industry sized projects as well.</p>
+
+                    <p>So why is the notion that FP is this nebulous, complicated, or impractical thing so pervasive in industry? In some part it is an issue of culture. Since FP is associated with academia, and carries the connotations that come with those origins. PL researcher Robert Harper has said that "it takes industry 20 years to adopt a good idea from academia", and I think that is certainly going on here. When my coworkers say that FP is unintuitive, I think what they really mean is that they associate it with research, with theory. They're saying it's untried and untested, it's not designed for practical use. They're saying it's not for the the working programmer.</p>
+
+                    <p>It is also a matter of education. Almost everybody learns imperative programming first. It is at this point that one learns assumptions and mindsets that can make the FP perspective harder to adopt.</p>
+
+                    <p>However, change is definitely coming. New languages are taking good ideas from both functional and imperative programming. Rust, for example, makes use of higher order functions, default immutability, and algebraic datatypes as in ML, but is ultimately an imperative language targetted for systems programming. Julia is a dynamic language meant to compete with the likes of Python and R while still boasting "near C speed"; it uses higher order functions as well. Even Java added support for higher order functions in the most recent release (although I suspect it will be a long time before the Java 'ecosystem' takes full advantage of this change). Facebook, Jane Street, Bloomberg, and many more use production OCaml code. I think we are witnessing a paradigm shift.</p>
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="http://zachhalle.github.io/blog">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-home fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="mailto:zach.halle95@gmail.com">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/zachhalle">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Zachary Halle 2015</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
