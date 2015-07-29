@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Why functional?</title>
+    <title>It's a good time to be an OCaml programmer</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="../../css/bootstrap.min.css" rel="stylesheet">
@@ -85,8 +85,8 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
-                        <h1>Why functional?</h1>
-                        <span class="meta">July 27, 2015</span>
+                        <h1>It's a good time to be an OCaml programmer</h1>
+                        <span class="meta">Date</span>
                     </div>
                 </div>
             </div>
@@ -98,103 +98,40 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p>On one occassion at my previous summer I mentioned my preference for functional languages in a conversation with several coworkers. A couple balked at this idea, intoning that OOP and imperative styles were superior and much more intuitive. I'm not one to get started up over such things so I just let it go, but this experience and the feeling that this attitude is common in industry motivated me to lay out a few reasons why I believe that the opposite is true; that functional style is equally or more intuitive, and that it is superior for producing bugless, concise, and modular code. I will be using Java to illustrate imperative code and OCaml to illustrate functional code.</p>
 
-                    <h2 class="section-heading">Less hidden semantics; more unified language concepts</h2>
-                    
-                    <p>Many patterns in imperative languages rely on special built-in constructs which are treated differently from normal expressions in the language. Consider the following Java:</p>
+                    <p>Right now is a fantastic time to be, or become, an OCaml programmer. In addition to rising interest in functional programming, static languages, and OCaml specifically, the language is seeing increasing application in industry as well. But what's more interesting is that several fantastic changes to the language are nearing readiness for use and are being considered for inclusion in the main branch of the OCaml compiler.</p>
 
-                    <pre><code class = "java">
-                    int[] arr = // int array
-                    int i;
-                    for (i = 0; i < arr.length; i++) {
-                      // loop body
-                    }
-                    </code></pre>
+                    <h2 class="section-heading">Multicore</h2>
 
-                    <p>To programmers this construct should be intuitive, due to their experience with it. Nonetheless, there is a lot going on here that isn't clear from the way it is written. Which class of statements and expressions can replace the assignment of <code>i</code>? Is any legal Java expression allowed there? How about any general syntactic form? It's not clear whether any statement is needed there at all, or whether we can leave the space before the first semicolon blank. What order are the above statements executed? Surprisingly - though it becomes intuitive once you are used to it - the loop body is executed before the update but after the initial assignment and loop guard check.</p>
+                    <p>Unfortunately, OCaml's current multicore story is nothing to brag about. At the moment, the language has absolutely no support for <i>shared-memory</i> parallelism. A brief review of terminology for those who don't already know: parallelism is the phenomenon of executing instructions on two or more processors simultaneously. A parallel program is one that exhibits parallelism. This much, OCaml is capable of, though only in an inefficient way. OCaml's parallelism support comes in the form of <i>processes</i>. The reason processes are inefficient is because processes spawned by the same program do not have a shared memory space. This has two effects. First, in order for two simultaneously live processes to communicate, they must rely on <i>message passing</i>, which is a relatively slow, expensive operation. Second, as processes do not share memory, a new process must copy over all the data in memory (this is an over simplification, as the heap is copy-on-write, but the idea is there). Thus, forking late in the life of a program is a very slow process.</p>
 
-                    <p> I'm not claiming that using a <code>for</code> loop is an insurmountable challenge. I'm claiming that the cognitive load of using all of these special syntactic forms, which are necessary in a language like Java, adds up. It leads to subtle, accidental bugs, because your attention is divided. All in all, there is a lot of trivia and details being memorized just to reason about ubiquitous constructs. In a functional language, function application is used as the primary control structure, and it has very simple and intuitive semantics. Further, it is general enough to emulate all sorts of imperative constructs, as seen below.</p>
+                    <p>Shared-memory parallelism is a more efficient form of parallelism. As opposed to processes, which don't share, <i>system threads</i> share access to a single heap. This allows programmers to get around both weaknesses of processes. Threads can communicate without message passing by writing to shared objects on the heap. And as everything is shared, there is no need to copy over data. However, all these advantages come at a price. Programs which use shared-memory parallelism are infamously difficult to write correctly and debug. Reads and writes to shared variables must be synchronized using complicated and error-prone mechanisms such as semaphores, and invisible bugs are very easy to encode into your program. One thread might load the contents of a variable before a the other thread performs a write to that variable. The two threads now disagree about the contents about that variable, which will likely to lead to errors down the road. Such an issue is hard to debug because the issue is likely to manifest later in the execution of the program than where the error is first introduced. Further, the order of instruction execution in a parallel setting is not well-defined, so the error might manifest seemingly randomly.</p>
 
-                    <h2 class="section-heading">Functions parameterized by functions</h2>
+                    <p>So where does OCaml come in? About a decade ago, Xavier Leroy had the following to say about shared-memory parallelism:
 
-                    <p>Some examples follow. Consider the common operation of building a collection with elements of type <code>T</code> from a collection of elements of type <code>S</code>. Suppose there is a function <code>f</code> which accepts an <code>S</code> and returns a <code>T</code>:</p>
+                    <blockquote cite="http://mirror.ocamlcore.org/caml.inria.fr/pub/ml-archives/caml-list/2002/11/64c14acb90cb14bedb2cacb73338fb15.en.html">
+                    Shared-memory multiprocessors have never really "taken off", at least in the general public.  For large parallel computations, clusters (distributed-memory systems) are the norm. For desktop use, monoprocessors are plenty fast. Even if you have a 4-processor SMP machine, it isn't clear whether you should write your program using shared memory or using message passing -- the latter is slightly more expensive, but scales to clusters... 
 
-                    <pre><code class = "java">
-                    // arrS in scope
-                    ArrayList<T> arrT = new ArrayList<T>();
+                    What about hyperthreading?  Well, I believe it's <b>the last convulsive movement of SMP's corpse</b> :-)  We'll see how it goes market-wise.  At any rate, the speedups announced for hyperthreading in the Pentium 4 are below a factor of 1.5; probably not enough to offset the overhead of making the OCaml runtime system thread-safe.  
 
-                    for (int i = 0; i < arrT.length(); i++) {
-                        arrT.add(f(arrS.get(i)))
-                    }
-                    </code></pre>
+                    In summary: there is no SMP support in OCaml, and it is very very unlikely that there will ever be.  If you're into parallelism, better investigate message-passing interfaces.
+                    </blockquote>
 
-                    <p>In a functional language such as OCaml, this would be written as follows:</p>
+                    The emphasis is mine. Today, we know that Leroy was very wrong about SMP. Every commercial desktop, laptop, and smartphone is multi-core. Most programs don't <i>need</i> SMP, but it's absence is frequently cited as a major weakness of OCaml.
 
-                    <pre><code class = "ocaml">
-                    (* arrS in scope *)
-                    let arrT = List.map f arrS
-                    </code></pre>
+                    </p>
 
-                    <p>No special syntax is needed; this functionality is implemented using only function application, as <code>List.map</code> can be defined as a recursive function. Best of all, <code>f</code> is one of the parameters to this function. In Java, the above structure needs to be copied over each time it occurs, because we cannot paramaterize code by the function <code>f</code>. But this defeats the purpose of having functions: we use them because we want to avoid rewriting common operations. Since OCaml allows functions to be parameterized by functions, we can abstract this operation into a new function, which we call <code>map</code>. Our code comes out more concise and more modular. It is less prone to bugs because you don't have to tangle with subtle <code>for</code> loop semantics. In fact, the above Java does have a bug: the loop guard needs to use arrS because arrT will not have the correct length until after the loop is executed. Did you notice? Something like a <code>NullPointerException</code> or <code>IndexOutOfRange</code> exception will occur.</p>
+                    <p>Which is a shame quite frankly, because default-immutable, functional languages make shared-memory parallelism much easier. The root of parallel programming woes is that threads need coordinate with eachother if they both want to read to and write from a shared variable. Since a major goal of the functional paradigm is to eschew destructive writes as much as possible, functional programs don't need to bend over backwards to get around this issue. It's part of the plan in the first place. Additionally higher order functions represent a natural way to express parallel execution of a function. One can imagine a higher order function <code>async: ('a -> 'b) -> 'a -> 'b</code> such that <code>async f x</code> produces the same value as <code>f x</code> but computes the result in a separate thread. If <code>f</code> is pure and <code>x</code> is not a mutable variable, then replacing calls to code <code>f x</code> with calls to <code>async f x</code> will not introduce parallelism errors.</p>
 
-                    <p>Another common operation: compute a single value of some type <code>T</code> by iterating through a collection with elements of type <code>S</code> and using a function which takes a <code>T</code> and an <code>S</code> and returns a <code>T</code>. That was a mouthful, so it's probably easiest to understand through code:</p>
+                    <p>The Cambridge-based OCaml Labs is currently working on an SMP-supporting branch of the language. The main challenge is writing a parallel-friendly garbage collector that is both correct and sufficiently performant. In particular, the high performance of the garbage collector in the sequential case is a major reason for using the language in the first place, so the team is working on a solution that preserves this performance as much as possible. Some have estimated that a working prototype should be around by the end of the year, and it may be some time before the implementation is sufficiently vetted to be recommendable for industry level usage. Even so, things are moving in the right direction.</p>
 
-                    <pre><code class = "java">
-                    // value init of type S in scope
-                    // collection arrT of type ArrayList<T> in scope
-                    S result = init;
+                    <h2 class="section-heading">flambda</h2>
 
-                    for (int i = 0; i < arrT.length(); i++) {
-                      result = f(arrT.get(i), result);
-                    }
-                    </code></pre>
+                    <p></p>
 
-                    <p>To make things more concrete, you could suppose <code>S</code> and <code>T</code> were both <code>int</code>, <code>f</code> was a function that added both of its arguments, and <code>init</code> was <code>0</code>.</p>
+                    <h2 class="section-heading">Modular implicits</h2>
 
-                    <pre><code class = "java">
-                    int sum = 0;
-
-                    for (int i = 0; i < arrT.length(); i++) {
-                      sum = arrT.get(i) + sum;
-                    }
-                    </code></pre>
-
-                    <p>The result is code that sums the elements of a list. In OCaml this functionality is abstracted into the function <code>foldr</code>:</p>
-
-                    <pre><code class = "ocaml">
-                    let result = List.foldr f init arrT
-                    </code></pre>
-
-                    <p>And the sum use case would be</p>
-
-                    <pre><code class = "ocaml">
-                    let sum = List.foldr (+) 0 arrT
-                    </code></pre>
-
-                    <p>Again, the result is cleaner and there is less room for errors. Does the above Java have any errors? Not visibly, but there's no guarantee that the function <code>f</code> does not mutate the variable <code>result</code> before returning, possibly erasing the contents or making them otherwise unrecoverable. Perhaps surprisingly, even though the OCaml code performs the same operation, it is immune to this error, due to pervasive immutability.</p>
-
-                    <h2 class="section-heading">Pervasive immutability</h2>
-
-                    <p>In OCaml, variables are bound to values that cannot be reassigned unless declared the variable is declared with a special keyword. This is perhaps the most radical departure from imperative style that functional languages adopt.</p>
-
-                    <p>This means, for example that if you pass in an argument of type <code>int list</code> to <code>List.map</code>, as above, you can be <b>certain</b> that the contents of the list will be unchanged. In places where imperative languages would destructively update the contents of a variable, functional languages prefer to build new values from old ones. In Java you might add an element to a collection as in <code>stack.push(value)</code>; in OCaml, you could write <code>let stack' = value :: stack</code>. Then, the value of <code>stack</code> would be unchanged, and <code>stack'</code> contains the updated value.</p>
-
-                    <p>So why is this a good thing? Imagine you had to perform some maintenance on a large Java code base, upwards of 10,000 lines. It will be a very difficult task to understand how this code works because implicit state is everywhere. Mutable global variables influence the behavior of the entire program. Method calls throughout the code base may or may not invisibly update the contents of their arguments. Each time you see a function call you may get sidetracked diving into that piece of code to make sure you understand all the hidden side effects that might occur from executing that code. Bugs that only occur when the program enters a very particular state are likely and extremely hard to detect, recreate, and debug.</p>
-
-                    <p>If the code base were written in an immutable-by-default language, all logic is local. The behavior of a particular function call should depend only on the arguments to that function, not on hidden global state. Thus if an error should occur inside a function, it should be sufficient to rerun that section with the same arguments in order to reproduce the issue. Further, as functions won't perform destructive side effects, understanding the behavior of function calls comes down to looking at the inputs and outputs. If the relationship is correct, your code is correct. Bugs are both less likely to occur and easier to identify and eliminate.</p>
-
-                    <p>One might argue that Java can achieve the same effect by using the <code>final</code> keyword, but the point is that OCaml and other functional languages prefer safety by default. Writing code with the same level of safety would require ubiquitous use of <code>final</code>, but in practice it is not very used. Conversely, when you want this unsafety - as you sometimes need code with side-effects such as I/O - to exist in your OCaml code, you explicity state you are doing so.</p>
-
-                    <h2 class="section-heading">Is it a culture problem?</h2>
-
-                    <p>I've only presented small examples. It is completely understandable if that convinces no one of the viability of FP for large projects where OOP is already proven. However, I hope this has been enough to convince others that it is worth their interest. That way we might see FP prove itself on industry sized projects as well.</p>
-
-                    <p>So why is the notion that FP is this nebulous, complicated, or impractical thing so pervasive in industry? In some part it is an issue of culture. Since FP is associated with academia, and carries the connotations that come with those origins. PL researcher Robert Harper has said that "it takes industry 20 years to adopt a good idea from academia", and I think that is certainly going on here. When my coworkers say that FP is unintuitive, I think what they really mean is that they associate it with research, with theory. They're saying it's untried and untested, it's not designed for practical use. They're saying it's not for the the working programmer.</p>
-
-                    <p>It is also a matter of education. Almost everybody learns imperative programming first. It is at this point that one learns assumptions and mindsets that can make the FP perspective harder to adopt.</p>
-
-                    <p>However, change is definitely coming. New languages are taking good ideas from both functional and imperative programming. Rust, for example, makes use of higher order functions, default immutability, and algebraic datatypes as in ML, but is ultimately an imperative language targetted for systems programming. Julia is a dynamic language meant to compete with the likes of Python and R while still boasting "near C speed"; it uses higher order functions as well. Even Java added support for higher order functions in the most recent release (although I suspect it will be a long time before the Java 'ecosystem' takes full advantage of this change). Facebook, Jane Street, Bloomberg, and many more use production OCaml code. I think we are witnessing a paradigm shift.</p>
+                    <p></p>
 
                 </div>
             </div>
