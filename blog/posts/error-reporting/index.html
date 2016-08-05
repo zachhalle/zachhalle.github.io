@@ -90,32 +90,38 @@
 
     <!-- Post Content -->
     <article>
-      <p>Last year for one of my classes I wrote a compiler for C in OCaml. It was definitely one of
-      the coolest experiences I've had in all of my years of education and I decided afterwards that
-      I wanted to write a full ML compiler as my next project. I also knew I wanted to learn Haskell
-      for a while, so I decided that I would use it for this project.</p>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p>Last year for one of my classes I wrote a compiler for C in OCaml. It was definitely one of
+                    the coolest experiences I've had in all of my years of education and I decided afterwards that
+                    I wanted to write a full ML compiler as my next project. I also knew I wanted to learn Haskell
+                    for a while, so I decided that I would use it for this project.</p>
 
-      <p>At the same time, I was reading about Haskell idioms, and trying to understand the
-      Typeclassopedia. So when I was thinking about how I would handle error reporting in my compiler,
-      and about how one would accomplish error-reporting that reacts in a robust way to errors rather
-      than just dying, I thought "this seems like it could be achieved with a monadic interface."</p>
-      <pre><code class = "haskell">
+                    <p>At the same time, I was reading about Haskell idioms, and trying to understand the
+                    Typeclassopedia. So when I was thinking about how I would handle error reporting in my compiler,
+                    and about how one would accomplish error-reporting that reacts in a robust way to errors rather
+                    than just dying, I thought "this seems like it could be achieved with a monadic interface."</p>
+                    <pre><code class = "haskell">
 
-        data Err = ...
-        data Hudson a = Sound a | Unsound a [Err] | Fatal [Err]
-        newtype HudstonT m a = HudsonT { runHudsonT :: m (Hudson a) }
+                      data Err = ...
+                      data Hudson a = Sound a | Unsound a [Err] | Fatal [Err]
+                      newtype HudstonT m a = HudsonT { runHudsonT :: m (Hudson a) }
 
-        sound = return . Sound
-        unsound a errs = return . Unsound $ a errs
-        fatal = return . Fatal
+                      sound = return . Sound
+                      unsound a errs = return . Unsound $ a errs
+                      fatal = return . Fatal
 
-      </code></pre>
-      <p><code>Hudson</code> is so named because this is the name of the dialect of ML I am working
-      on. It defines 3 constructors. <code>Sound</code> represents a state in the compilation pipeline
-      that is thus far error-free. <code>Unsound</code> represents a state where we have encountered
-      some sort of error that we know will eventually prevent full compilation, but we want to continue
-      searching for more errors to report. <code>Fatal</code> means we have found an error that we
-      don't know how to recover from and must short-circuit immediately, reporting any errors.</p>
+                    </code></pre>
+                    <p><code>Hudson</code> is so named because this is the name of the dialect of ML I am working
+                    on. It defines 3 constructors. <code>Sound</code> represents a state in the compilation pipeline
+                    that is thus far error-free. <code>Unsound</code> represents a state where we have encountered
+                    some sort of error that we know will eventually prevent full compilation, but we want to continue
+                    searching for more errors to report. <code>Fatal</code> means we have found an error that we
+                    don't know how to recover from and must short-circuit immediately, reporting any errors.</p>
+                </div>
+            </div>
+        </div>
     </article>
 
     <hr>
