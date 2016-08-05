@@ -108,17 +108,39 @@
                       data Hudson a = Sound a | Unsound a [Err] | Fatal [Err]
                       newtype HudstonT m a = HudsonT { runHudsonT :: m (Hudson a) }
 
-                      sound = return . Sound
-                      unsound a errs = return . Unsound $ a errs
-                      fatal = return . Fatal
+                      sound = HudsonT . return . Sound
+                      unsound a errs = HudsonT . return $ Unsound a errs
+                      fatal = HudsonT . return . Fatal
 
                     </code></pre>
+
                     <p><code>Hudson</code> is so named because this is the name of the dialect of ML I am working
                     on. It defines 3 constructors. <code>Sound</code> represents a state in the compilation pipeline
                     that is thus far error-free. <code>Unsound</code> represents a state where we have encountered
                     some sort of error that we know will eventually prevent full compilation, but we want to continue
                     searching for more errors to report. <code>Fatal</code> means we have found an error that we
-                    don't know how to recover from and must short-circuit immediately, reporting any errors.</p>
+                    don't know how to recover from and must short-circuit immediately, reporting any errors.
+                    We also define helpers for easily injecting into the transformer version of the monad.</p>
+
+                    <p>The monad instance for Hudson is as follows:</p>
+
+                    <code><pre>
+                        instance Monad Hudson where
+                            return = Sound
+                            (>>=) (Sound a) f = f a
+                            (>>=) (Unsound a bs) = case f a of
+                                Sound a' -> Unsound a' bs
+                                Unsound a' bs' -> Unsound a' (bs ++ bs')
+                                Fatal bs' -> Fatal (bs ++ bs')
+                            (>>=) (Fatal errs) _ = Fatal errs
+                    </pre></code>
+
+                    <p>The transformer instance is similar, just with more tedious packing and unpacking.
+                    Similar to the <code>Maybe</code> monad, this definition of <code>(>>=)</code>
+                    allows us to write code which abstracts the details of error cases and automatically
+                    short-circuits if a <code>Fatal</code> error occurs. The unsound case merely 'infects'
+                    sound computations but does not short circuit them.</p>
+
                 </div>
             </div>
         </div>
