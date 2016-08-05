@@ -124,7 +124,7 @@
 
                     <p>The monad instance for Hudson is as follows:</p>
 
-                    <code><pre>
+                    <pre><code class = "haskell">
                         instance Monad Hudson where
                             return = Sound
                             (>>=) (Sound a) f = f a
@@ -133,7 +133,7 @@
                                 Unsound a' bs' -> Unsound a' (bs ++ bs')
                                 Fatal bs' -> Fatal (bs ++ bs')
                             (>>=) (Fatal errs) _ = Fatal errs
-                    </pre></code>
+                    </code></pre>
 
                     <p>The transformer instance is similar, just with more tedious packing and unpacking.
                     Similar to the <code>Maybe</code> monad, this definition of <code>(>>=)</code>
