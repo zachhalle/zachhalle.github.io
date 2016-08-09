@@ -104,13 +104,13 @@
                     than just dying, I thought "this seems like it could be achieved with a monadic interface."</p>
                     <pre><code class = "haskell">
 
-                      data Err = ...
-                      data Hudson a = Sound a | Unsound a [Err] | Fatal [Err]
-                      newtype HudstonT m a = HudsonT { runHudsonT :: m (Hudson a) }
+                    data Err = ...
+                    data Hudson a = Sound a | Unsound a [Err] | Fatal [Err]
+                    newtype HudstonT m a = HudsonT { runHudsonT :: m (Hudson a) }
 
-                      sound = HudsonT . return . Sound
-                      unsound a errs = HudsonT . return $ Unsound a errs
-                      fatal = HudsonT . return . Fatal
+                    sound = HudsonT . return . Sound
+                    unsound a errs = HudsonT . return $ Unsound a errs
+                    fatal = HudsonT . return . Fatal
 
                     </code></pre>
 
@@ -125,21 +125,26 @@
                     <p>The monad instance for Hudson is as follows:</p>
 
                     <pre><code class = "haskell">
-                        instance Monad Hudson where
-                            return = Sound
-                            (>>=) (Sound a) f = f a
-                            (>>=) (Unsound a bs) = case f a of
-                                Sound a' -> Unsound a' bs
-                                Unsound a' bs' -> Unsound a' (bs ++ bs')
-                                Fatal bs' -> Fatal (bs ++ bs')
-                            (>>=) (Fatal errs) _ = Fatal errs
+                    instance Monad Hudson where
+                        return = Sound
+                        (>>=) (Sound a) f = f a
+                        (>>=) (Unsound a bs) = case f a of
+                            Sound a' -> Unsound a' bs
+                            Unsound a' bs' -> Unsound a' (bs ++ bs')
+                            Fatal bs' -> Fatal (bs ++ bs')
+                        (>>=) (Fatal errs) _ = Fatal errs
                     </code></pre>
 
                     <p>The transformer instance is similar, just with more tedious packing and unpacking.
                     Similar to the <code>Maybe</code> monad, this definition of <code>(>>=)</code>
                     allows us to write code which abstracts the details of error cases and automatically
-                    short-circuits if a <code>Fatal</code> error occurs. The unsound case merely 'infects'
-                    sound computations but does not short circuit them.</p>
+                    short-circuits if a <code>Fatal</code> error occurs. The <code>Unsound</code> case merely 'infects'
+                    sound computations but does not short circuit them, so that we might continue looking for more
+                    errors to report.</p>
+
+                    <p>Else where, in <code>ScopeCheck.hs</code>, I'm writing code to ensure that checks the source
+                    for usage of undefined variables. This is a perfect testing ground for the error-reporting infrastructure
+                    we have set up.</p>
 
                 </div>
             </div>
@@ -179,7 +184,7 @@
                             </a>
                         </li>
                     </ul>
-                    <p class="copyright text-muted">Copyright &copy; Zachary Halle 2015</p>
+                    <p class="copyright text-muted">Copyright &copy; Zachary Halle 2016</p>
                 </div>
             </div>
         </div>
