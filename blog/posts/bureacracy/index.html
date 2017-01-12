@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,18 +9,23 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Thin Mints</title>
+    <title>Post title</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/clean-blog.min.css" rel="stylesheet">
+    <link href="../../css/clean-blog.min.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- MathJax -->
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -50,13 +55,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="../index.html">Home</a>
+                        <a href="../../../index.html">Home</a>
                     </li>
                     <li>
-                        <a href="index.html">Posts</a>
+                        <a href="../../index.html">Posts</a>
                     </li>
                     <li>
-                        <a href="about.html">About</a>
+                        <a href="../../about.html">About</a>
                     </li>
                     <li>
                         <a href="mailto:zach.halle95@gmail.com">Contact</a>
@@ -70,48 +75,30 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
+    <header class="intro-header" style="background-image: url('../../img/post-bg.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <div class="site-heading">
-                        <h1>Failure Faster</h1>
-                        <hr class="small">
-                        <span class="subheading">A programming, computer science, and mathematics blog.</span>
+                    <div class="post-heading">
+                        <h1>Post title</h1>
+                        <h2 class="subheading">Subtitle</h2>
+                        <span class="meta">Date</span>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="row">
-                <hr>
-                <div class="post-preview">
-                    <a href="posts/bureacracy/index.html">
-                        <h2 class="post-title">
-                            Types are not bureacracy
-                        </h2>
-                    </a>
-                    <p class="post-meta">January 12, 2017</p>
-                    <hr>
-                    <a href="about.html">
-                        <h2 class="post-title">
-                            New blog!
-                        </h2>
-                    </a>
-                    <p class="post-meta">June 6, 2015</p>
+    <!-- Post Content -->
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p>This is a post template</p>
                 </div>
-                <!-- Pager
-                <ul class="pager">
-                    <li class="next">
-                        <a href="#">Older Posts &rarr;</a>
-                    </li>
-                </ul> -->
             </div>
         </div>
-    </div>
+    </article>
 
     <hr>
 
@@ -146,10 +133,12 @@
                             </a>
                         </li>
                     </ul>
+                    <p class="copyright text-muted">Copyright &copy; Zachary Halle 2015</p>
                 </div>
             </div>
         </div>
     </footer>
+
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
 
